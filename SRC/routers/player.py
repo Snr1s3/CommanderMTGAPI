@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from SRC.routers import general
+from routers import general
 from ..client import get_db_connection, release_db_connection
 from psycopg2.extras import RealDictCursor
 from ..models import player
