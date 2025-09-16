@@ -3,20 +3,12 @@ from typing import List
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from datetime import date
+
+from .models import *
+
 from .client import *
-'''
-from .routers.emparellaments import *
-from .routers.estadistiques import *
-from .routers.formats import *
-from .routers.puntuacions import *
-from .routers.rangs import *
-from .routers.resultats import *
-from .routers.rols import *
-from .routers.rondes import *
-from .routers.subscripcions import *
-from .routers.tornejos import *
-from .routers.usuaris import *
-'''
+
+from .routers.player import *
 app = FastAPI()
 
 app.add_middleware(
@@ -38,3 +30,21 @@ def check():
         raise HTTPException(status_code=500, detail="Error de connexió a la base de dades")
     release_db_connection(conn) 
     return "DDBB operativa"
+
+@app.get("/all_players", response_model=List[player])
+def all_players():
+    return get_all_players()
+
+@app.get("/player/{id}", response_model=player)
+def player_by_id(id: int):
+    return get_player_by_id(id)
+
+@app.delete("/player/{id}", response_model=dict)
+def delete_player(id: int):
+    return delete_player_by_id(id)
+@app.post("/player/", response_model=player)
+def create_new_player(p_name: str, pwd : str):
+    return create_player(p_name, pwd)
+@app.post("/player/authenticate/", response_model=player)
+def authenticate(name: str, pwd: str):
+    return authenticate_player(name, pwd)
