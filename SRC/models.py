@@ -20,3 +20,7 @@ class player_commander(BaseModel):
     id_player : int
     id_commander : int
     id_partida : int
+
+class AuthRequest(BaseModel):
+    name: str
+    pwd: str

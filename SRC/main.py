@@ -39,12 +39,18 @@ def all_players():
 def player_by_id(id: int):
     return get_player_by_id(id)
 
-@app.delete("/player/{id}", response_model=dict)
+@app.post("/player/create", response_model=player)
+def create_new_player(Auth: AuthRequest):
+    return create_player(Auth.name, Auth.pwd)
+
+@app.post("/player/authenticate/", response_model=player)
+def authenticate(Auth: AuthRequest):
+    return authenticate_player(Auth.name, Auth.pwd)
+
+@app.put("/player/update", response_model=player)
+def update_player(Auth: AuthRequest):
+    return update_player_hash(Auth.name, Auth.pwd)
+
+@app.delete("/player/delete", response_model=dict)
 def delete_player(id: int):
     return delete_player_by_id(id)
-@app.post("/player/", response_model=player)
-def create_new_player(p_name: str, pwd : str):
-    return create_player(p_name, pwd)
-@app.post("/player/authenticate/", response_model=player)
-def authenticate(name: str, pwd: str):
-    return authenticate_player(name, pwd)
