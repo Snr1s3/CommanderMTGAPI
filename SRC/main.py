@@ -9,6 +9,10 @@ from .models import *
 from .client import *
 
 from .routers.player import *
+from .routers.commander import *
+from .routers.partida import *
+from .routers.player_commander import *
+
 app = FastAPI()
 
 app.add_middleware(
@@ -54,3 +58,52 @@ def update_player(Auth: AuthRequest):
 @app.delete("/player/delete", response_model=dict)
 def delete_player(id: int):
     return delete_player_by_id(id)
+
+@app.get("/all_commanders", response_model=List[commander])
+def all_commanders():
+    return get_all_commanders()
+
+@app.get("/commander/{id}", response_model=commander)
+def commander_by_id(id: int):
+    return get_commander_by_id(id)
+
+@app.post("/commander/create", response_model=commander)
+def create_new_commander(commander: str):
+    return create_commander(commander)
+
+@app.delete("/commander/delete", response_model=dict)
+def delete_commander(id: int):
+    return delete_commander_by_id(id)   
+
+@app.get("/all_partides", response_model=List[partida])
+def all_partides():
+    return get_all_partides()
+
+@app.get("/partida/{id}", response_model=partida)
+def partida_by_id(id: int):
+    return get_partida_by_id(id)
+
+@app.post("/partida/create", response_model=partida)
+def create_new_partida(winner: int = None):
+    return create_partida(winner)
+
+@app.put("/partida/update_winner", response_model=partida)
+def update_partida(id: int, winner: int):
+    return update_partida_winner(id, winner)
+
+@app.delete("/partida/delete", response_model=dict)
+def delete_partida(id: int):
+    return delete_partida_by_id(id)
+
+@app.get("/all_player_commanders", response_model=List[player_commander])
+def all_player_commanders():
+    return get_all_player_commanders()  
+@app.get("/player_commander/{id}", response_model=player_commander)
+def player_commander_by_id(id: int):    
+    return get_player_commander_by_id(id)
+@app.post("/player_commander/create", response_model=player_commander)
+def create_new_player_commander(id_player: int, id_commander: int, id_partida: int):
+    return create_player_commander(id_player, id_commander, id_partida)
+@app.delete("/player_commander/delete", response_model=dict)
+def delete_player_commander(id: int):
+    return delete_player_commander_by_id(id)   
