@@ -19,7 +19,7 @@ def get_commander_by_id(id: int) -> commander:
 def delete_commander_by_id(id: int) -> dict:
     return general.delete_by_id("commander", id)
 
-def create_commander(commander: str) -> commander:
+def create_commander(commander_name: str) -> commander:
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     try:
@@ -27,7 +27,7 @@ def create_commander(commander: str) -> commander:
             INSERT INTO commander (commander)
             VALUES (%s)
             RETURNING *;
-        """, (commander,))
+        """, (commander_name,))
         new_commander = cursor.fetchone()
         conn.commit()
         return commander(**new_commander)
