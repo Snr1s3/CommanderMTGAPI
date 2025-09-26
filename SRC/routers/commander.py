@@ -10,29 +10,16 @@ def get_all_commanders() -> List[Commander]:
     return [Commander(**c) for c in commanders]
 
 def get_commander_by_id(id: int) -> Commander:
-    c = general.select_by_id("commander", id)
-    if c:
-        return Commander(**c)
+    if general.check_id("commander", id):
+        return Commander(**general.select_by_id("commander", id))
     else:
-        raise HTTPException(status_code=404, detail="commander not found")
+        return {"message": "Id not found"}
 
 def delete_commander_by_id(id: int) -> dict:
-    return general.delete_by_id("commander", id)
+    if general.check_id("commander", id):
+        return general.delete_by_id("commander", id)
+    else:
+        return {"message": "Id not found"}
 
 def create_commander(commander_name: str) -> Commander:
-    conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
-    try:
-        cursor.execute("""
-            INSERT INTO commander (commander)
-            VALUES (%s)
-            RETURNING *;
-        """, (commander_name,))
-        new_commander = cursor.fetchone()
-        conn.commit()
-        return Commander(**new_commander)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    finally:
-        cursor.close()
-        release_db_connection(conn)
+    return Commander(**general.create("commander", {"commander_name": commander_name}))

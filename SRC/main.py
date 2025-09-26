@@ -27,7 +27,6 @@ app.add_middleware(
 def root():
     return "API de Turnonauta operativa"
 
-
 @app.get("/all_players", response_model=List[Usuari])
 def all_players():
     return get_all_players()
@@ -91,12 +90,15 @@ def delete_partida(id: int):
 @app.get("/all_usuari_commanders", response_model=List[UsuariCommander])
 def all_usuari_commanders():
     return get_all_usuari_commanders()  
+
 @app.get("/usuari_commander/{id}", response_model=UsuariCommander)
 def usuari_commander_by_id(id: int):    
     return get_usuari_commander_by_id(id)
+
 @app.post("/usuari_commander/create", response_model=UsuariCommander)
 def create_new_usuari_commander(id_player: int, id_commander: int, id_partida: int):
     return create_usuari_commander(id_player, id_commander, id_partida)
+
 @app.delete("/usuari_commander/delete", response_model=dict)
 def delete_usuari_commander(id: int):
     return delete_usuari_commander_by_id(id)   

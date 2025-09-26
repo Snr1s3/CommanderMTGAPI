@@ -20,19 +20,14 @@ def delete_usuari_commander_by_id(id: int) -> dict:
     return general.delete_by_id("usuari_commander", id)
 
 def create_usuari_commander(id_player: int, id_commander: int, id_partida: int) -> UsuariCommander:
-    conn = get_db_connection()
-    cursor = conn.cursor(cursor_factory=RealDictCursor)
-    try:
-        cursor.execute("""
-            INSERT INTO usuari_commander (id_player, id_commander, id_partida)
-            VALUES (%s, %s, %s)
-            RETURNING *;
-        """, (id_player, id_commander, id_partida))
-        new_usuari_commander = cursor.fetchone()
-        conn.commit()
-        return UsuariCommander(**new_usuari_commander)
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    finally:
-        cursor.close()
-        release_db_connection(conn)
+    return UsuariCommander(**general.create("usuari_commander", {"id_player": id_player, "id_commander": id_commander, "id_partida": id_partida}))
+
+def update_usuari_commander(id: int, id_player: int = None, id_commander: int = None, id_partida: int = None) -> UsuariCommander:
+    data = {"id": id}
+    if id_player is not None:
+        data["id_player"] = id_player
+    if id_commander is not None:
+        data["id_commander"] = id_commander
+    if id_partida is not None:
+        data["id_partida"] = id_partida
+    return UsuariCommander(**general.update("usuari_commander", data))
