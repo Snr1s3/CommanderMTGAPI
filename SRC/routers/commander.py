@@ -14,7 +14,7 @@ def get_commander_by_id(id: int) -> commander:
     if c:
         return commander(**c)
     else:
-        raise HTTPException(status_code=404, detail="commander not found")
+        raise HTTPException(status_code=404, detail="commander noat found")
 
 def delete_commander_by_id(id: int) -> dict:
     return general.delete_by_id("commander", id)
