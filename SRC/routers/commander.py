@@ -5,21 +5,21 @@ from psycopg2.extras import RealDictCursor
 from ..models import *
 from typing import List
 
-def get_all_commanders() -> List[commander]:
+def get_all_commanders() -> List[Commander]:
     commanders = general.select_all("commander")
-    return [commander(**c) for c in commanders]
+    return [Commander(**c) for c in commanders]
 
-def get_commander_by_id(id: int) -> commander:
+def get_commander_by_id(id: int) -> Commander:
     c = general.select_by_id("commander", id)
     if c:
-        return commander(**c)
+        return Commander(**c)
     else:
         raise HTTPException(status_code=404, detail="commander not found")
 
 def delete_commander_by_id(id: int) -> dict:
     return general.delete_by_id("commander", id)
 
-def create_commander(commander_name: str) -> commander:
+def create_commander(commander_name: str) -> Commander:
     conn = get_db_connection()
     cursor = conn.cursor(cursor_factory=RealDictCursor)
     try:
@@ -30,7 +30,7 @@ def create_commander(commander_name: str) -> commander:
         """, (commander_name,))
         new_commander = cursor.fetchone()
         conn.commit()
-        return commander(**new_commander)
+        return Commander(**new_commander)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
     finally:
