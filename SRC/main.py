@@ -11,7 +11,7 @@ from .client import *
 from .routers.player import *
 from .routers.commander import *
 from .routers.partida import *
-from .routers.player_commander import *
+from .routers.usuari_commander import *
 
 app = FastAPI()
 
@@ -95,15 +95,15 @@ def update_partida(id: int, winner: int):
 def delete_partida(id: int):
     return delete_partida_by_id(id)
 
-@app.get("/all_player_commanders", response_model=List[player_commander])
-def all_player_commanders():
-    return get_all_player_commanders()  
-@app.get("/player_commander/{id}", response_model=player_commander)
-def player_commander_by_id(id: int):    
-    return get_player_commander_by_id(id)
-@app.post("/player_commander/create", response_model=player_commander)
-def create_new_player_commander(id_player: int, id_commander: int, id_partida: int):
-    return create_player_commander(id_player, id_commander, id_partida)
-@app.delete("/player_commander/delete", response_model=dict)
-def delete_player_commander(id: int):
-    return delete_player_commander_by_id(id)   
+@app.get("/all_usuari_commanders", response_model=List[usuari_commander])
+def all_usuari_commanders():
+    return get_all_usuari_commanders()  
+@app.get("/usuari_commander/{id}", response_model=usuari_commander)
+def usuari_commander_by_id(id: int):    
+    return get_usuari_commander_by_id(id)
+@app.post("/usuari_commander/create", response_model=usuari_commander)
+def create_new_usuari_commander(id_player: int, id_commander: int, id_partida: int):
+    return create_usuari_commander(id_player, id_commander, id_partida)
+@app.delete("/usuari_commander/delete", response_model=dict)
+def delete_usuari_commander(id: int):
+    return delete_usuari_commander_by_id(id)   
