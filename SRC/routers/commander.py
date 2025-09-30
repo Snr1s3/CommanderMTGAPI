@@ -1,25 +1,30 @@
-from fastapi import HTTPException
-from SRC.routers import general
-from ..client import get_db_connection, release_db_connection
-from psycopg2.extras import RealDictCursor
-from ..models import *
 from typing import List
 
-def get_all_commanders() -> List[Commander]:
-    commanders = general.select_all("commander")
-    return [Commander(**c) for c in commanders]
+from fastapi import APIRouter, HTTPException
+from SRC.models.commander import Commander, CreateCommander
+from SRC.service.commander import create_commander, delete_commander_by_id, get_all_commanders, get_commander_by_id
 
-def get_commander_by_id(id: int) -> Commander:
-    if general.check_id("commander", id):
-        return Commander(**general.select_by_id("commander", id))
-    else:
-        return {"message": "Id not found"}
+router = APIRouter(
+    prefix="/commanders",
+    tags=["commanders"],
+    responses={404: {"description": "Not found"}}
+)
 
-def delete_commander_by_id(id: int) -> dict:
-    if general.check_id("commander", id):
-        return general.delete_by_id("commander", id)
-    else:
-        return {"message": "Id not found"}
+@router.get("/", response_model=List[Commander])
+def all_commanders():
+    return get_all_commanders()
 
-def create_commander(commander_name: str) -> Commander:
-    return Commander(**general.create("commander", {"commander_name": commander_name}))
+@router.get("/{id}", response_model=Commander)
+def commander_by_id(id: int):
+    return get_commander_by_id(id)
+
+@router.post("/{id}", response_model=Commander)
+def create_new_commander(commander: CreateCommander):
+    try:
+        return create_commander(commander.commander)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("{id}", response_model=dict)
+def delete_commander(id: int):
+    return delete_commander_by_id(id)  

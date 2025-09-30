@@ -1,0 +1,76 @@
+
+├── routers/
+│   ├── __init__.py
+│   ├── commander.py
+│   ├── partida.py
+│   ├── usuari.py
+│   └── usuari_commander.py
+1. Use FastAPI Router Pattern
+Move from individual functions to proper FastAPI routers
+Use @router.get/post/put/delete decorators instead of standalone functions
+Implement proper HTTP status codes and response models
+2. Separate HTTP Logic from Business Logic
+Routers should only handle HTTP concerns (request/response)
+Move database operations to service layer
+Keep route handlers thin and focused
+3. Add Proper Request/Response Models
+Use Pydantic models for all request bodies
+Define specific response models for each endpoint
+Add proper validation and error handling
+4. Implement Consistent Error Handling
+Create custom exception handlers
+Use appropriate HTTP status codes (200, 201, 204, 400, 404, 409, 500)
+Return consistent error response format
+5. Add Comprehensive Documentation
+Use proper OpenAPI tags and descriptions
+Add examples to all endpoints
+Document possible error responses
+6. Use Dependency Injection
+Inject database connections using FastAPI's Depends()
+Create reusable dependencies for common operations
+Remove direct imports of database functions
+7. Add Input Validation
+Validate path parameters (e.g., positive integers for IDs)
+Add query parameter validation
+Implement proper data sanitization
+8. Implement Proper HTTP Methods
+Use POST for creation (return 201)
+Use PUT for full updates
+Use PATCH for partial updates
+Use DELETE for deletion (return 204)
+9. Add Authentication/Authorization
+Implement JWT token validation
+Add role-based access control
+Protect sensitive endpoints
+10. Follow RESTful Conventions
+Use proper URL patterns (/commanders/{id} not /commander/get/{id})
+Implement consistent naming conventions
+Use plural nouns for resource names
+11. Add Pagination
+Implement pagination for list endpoints
+Add query parameters for filtering and sorting
+Return metadata about total count and pages
+12. Response Formatting
+Return appropriate status codes
+Use consistent response structure
+Handle empty results properly
+
+
+
+
+
+
+
+
+├── services/
+│   ├── __init__.py
+│   ├── commander_service.py
+│   ├── partida_service.py
+│   └── user_service.py
+├── database/
+│   ├── __init__.py
+│   ├── connection.py
+│   └── models.py
+└── dependencies/
+    ├── __init__.py
+    └── database.py

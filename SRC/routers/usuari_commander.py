@@ -1,33 +1,28 @@
-from fastapi import HTTPException
-from SRC.routers import general
-from ..client import get_db_connection, release_db_connection
-from psycopg2.extras import RealDictCursor
-from ..models import UsuariCommander
 from typing import List
 
-def get_all_usuari_commanders() -> List[UsuariCommander]:
-    usuari_commanders = general.select_all("usuari_commander")
-    return [UsuariCommander(**c) for c in usuari_commanders]
+from fastapi import APIRouter
+from SRC.models.usuari_commander import CreateUsuariCommander, UsuariCommander
+from SRC.service.usuari_commander import create_usuari_commander, delete_usuari_commander_by_id, get_all_usuari_commanders, get_usuari_commander_by_id
 
-def get_usuari_commander_by_id(id: int) -> UsuariCommander:
-    c = general.select_by_id("usuari_commander", id)
-    if c:
-        return UsuariCommander(**c)
-    else:
-        raise HTTPException(status_code=404, detail="usuari_commander not found")
+router = APIRouter(
+    prefix="/usuari_commander",
+    tags=["users"],
+    responses={404: {"description": "Not found"}}
+)
 
-def delete_usuari_commander_by_id(id: int) -> dict:
-    return general.delete_by_id("usuari_commander", id)
+#usuari_commander_service = UsuariCommanderService()
+@router.get("/", response_model=List[UsuariCommander])
+def all_usuari_commanders():
+    return get_all_usuari_commanders()  
 
-def create_usuari_commander(id_player: int, id_commander: int, id_partida: int) -> UsuariCommander:
-    return UsuariCommander(**general.create("usuari_commander", {"id_player": id_player, "id_commander": id_commander, "id_partida": id_partida}))
+@router.get("/{id}", response_model=UsuariCommander)
+def usuari_commander_by_id(id: int):    
+    return get_usuari_commander_by_id(id)
 
-def update_usuari_commander(id: int, id_player: int = None, id_commander: int = None, id_partida: int = None) -> UsuariCommander:
-    data = {"id": id}
-    if id_player is not None:
-        data["id_player"] = id_player
-    if id_commander is not None:
-        data["id_commander"] = id_commander
-    if id_partida is not None:
-        data["id_partida"] = id_partida
-    return UsuariCommander(**general.update("usuari_commander", data))
+@router.post("/{id}", response_model=UsuariCommander)
+def create_new_usuari_commander(usuariCommander: CreateUsuariCommander):
+    return create_usuari_commander(usuariCommander.id_player, usuariCommander.id_commander, usuariCommander.id_partida)
+
+@router.delete("/{id}", response_model=dict)
+def delete_usuari_commander(id: int):
+    return delete_usuari_commander_by_id(id)   

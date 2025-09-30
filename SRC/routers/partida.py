@@ -1,26 +1,32 @@
-from fastapi import HTTPException
-from SRC.routers import general
-from ..client import get_db_connection, release_db_connection
-from psycopg2.extras import RealDictCursor
-from ..models import Partida
 from typing import List
 
-def get_all_partides() -> List[Partida]:
-    partides = general.select_all("partida")
-    return [Partida(**p) for p in partides]
+from fastapi import APIRouter
+from SRC.models.partida import CreatePartida, Partida
+from SRC.service.partida import create_partida, delete_partida_by_id, get_all_partides, get_partida_by_id, update_partida_winner
 
-def get_partida_by_id(id: int) -> Partida:
-    p = general.select_by_id("partida", id)
-    if p:
-        return Partida(**p)
-    else:
-        raise HTTPException(status_code=404, detail="Partida not found")
+router = APIRouter(
+    prefix="/partidas",
+    tags=["partidas"],
+    responses={404: {"description": "Not found"}}
+)
 
-def delete_partida_by_id(id: int) -> dict:
-    return general.delete_by_id("partida", id)
+#partida_service = PartidaService()
+@router.get("/", response_model=List[Partida])
+def all_partides():
+    return get_all_partides()
 
-def create_partida(winner: int = None) -> Partida:
-    return Partida(**general.create("partida",{"winner":winner}))
+@router.get("/{id}", response_model=Partida)
+def partida_by_id(id: int):
+    return get_partida_by_id(id)
 
-def update_partida_winner(id: int, winner: int) -> Partida:
-    return Partida(**general.update("partida",{"id":id,"winner":winner}))
+@router.post("/{id}", response_model=Partida)
+def create_new_partida(partida: CreatePartida):
+    return create_partida(partida.winner)
+
+@router.put("/{id}", response_model=Partida)
+def update_partida(partida: Partida):
+    return update_partida_winner(partida.id, partida.winner)
+
+@router.delete("/{id}", response_model=dict)
+def delete_partida(id: int):
+    return delete_partida_by_id(id)
