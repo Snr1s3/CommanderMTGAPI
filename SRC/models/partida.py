@@ -11,3 +11,11 @@ class Partida(BaseModel):
 
 class CreatePartida(BaseModel):
     winner: Optional[int] = Field(None, description="ID of the winner")
+
+class UpdatePartida(BaseModel):
+    winner: Optional[int] = Field(None, description="Winner ID")
+    
+class SelectAllPartida(BaseModel):
+    pag: Optional[int] = Field(None,description="Offset")
+    limit: Optional[int] = Field(None,description="Limit")
+    winner: Optional[int] = Field(None, description="ID of the winner")

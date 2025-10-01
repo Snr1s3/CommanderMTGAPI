@@ -1,8 +1,11 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException
-from SRC.models.commander import Commander, CreateCommander
-from SRC.service.commander import create_commander, delete_commander_by_id, get_all_commanders, get_commander_by_id
+from fastapi import APIRouter, Depends, HTTPException
+from SRC.models.commander import *
+from SRC.service.commander import CommanderService
+
+def get_commander_service():
+    return CommanderService()
 
 router = APIRouter(
     prefix="/commanders",
@@ -11,20 +14,36 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=List[Commander])
-def all_commanders():
-    return get_all_commanders()
+async def  all_commanders(
+        commander:SelectAllCommander=Depends(),
+        commander_service: CommanderService = Depends(get_commander_service)
+    ):
+    return commander_service.get_all_commanders(commander)
 
 @router.get("/{id}", response_model=Commander)
-def commander_by_id(id: int):
-    return get_commander_by_id(id)
+async def  commander_by_id(
+        id: int,
+        commander_service: CommanderService = Depends(get_commander_service)
+    ):
+    return commander_service.get_commander_by_id(id)
 
-@router.post("/{id}", response_model=Commander)
-def create_new_commander(commander: CreateCommander):
-    try:
-        return create_commander(commander.commander)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.delete("{id}", response_model=dict)
-def delete_commander(id: int):
-    return delete_commander_by_id(id)  
+@router.post("/", response_model=Commander)
+async def  create_new_commander(
+        commander: CreateCommander,
+        commander_service: CommanderService = Depends(get_commander_service)
+    ):
+        return commander_service.create_commander(commander.commander)
+    
+@router.put("/{id}", response_model=Commander)
+async def update_commander(
+        id: int,
+        commander: UpdateCommander,
+        commander_service: CommanderService = Depends(get_commander_service)
+    ):
+    return await commander_service.update_commander(id, commander.commander)
+@router.delete("/{id}", response_model=dict)
+async def  delete_commander(
+        id: int,
+        commander_service: CommanderService = Depends(get_commander_service)
+    ):
+    return commander_service.delete_commander_by_id(id)  

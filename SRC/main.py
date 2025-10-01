@@ -1,20 +1,12 @@
-from fastapi import FastAPI, HTTPException, Depends
-from typing import List
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from datetime import date
-import requests
 
-from .models.commander import *
-from .models.usuari_commander import *
-from .models.partida import *
+from .models import *
 
 
 from .client import *
 
-from .routers.commander import *
-from .routers.partida import *
-from .routers.usuari_commander import *
+from .routers import *
 
 app = FastAPI()
 
@@ -25,7 +17,9 @@ app.add_middleware(
     allow_methods=["*"],  
     allow_headers=["*"],  
 )
-
+app.include_router(commander.router)
+app.include_router(partida.router)
+app.include_router(usuari_commander.router)
 
 @app.get("/", tags=["root"])
 async def root():
