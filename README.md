@@ -1,6 +1,6 @@
 # Commander MTG API
 This service handles CRUD operations for Magic: The Gathering Commander games, commanders, games (partidas), and user-commander relationships.
-The user/Log in is handeled in the Login_service ! INSERTAR LINK DEL SERVEI
+[The user/Log in is handeled in the Login_service](https://github.com/Snr1s3/Login_microservice)
 
 **⚠️ Requirements:** PostgreSQL database is required.
 
