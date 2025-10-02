@@ -10,7 +10,7 @@ class CommanderService:
         return Commander(**general.select_by_id("commander", id))
     def delete_commander_by_id(self, id: int) -> dict:
         return general.delete_by_id("commander", id)
-    def  update_usuari_commander(self, id: int, commander: str = None) -> Commander:
-        return Commander(**general.create("commander",{"commander":commander},id))
+    def  update_commander(self, id: int, commander: str = None) -> Commander:
+        return Commander(**general.update("commander",{"commander":commander},id))
     def create_commander(self, commander_name: str) -> Commander:
         return Commander(**general.create("commander", {"commander": commander_name}))

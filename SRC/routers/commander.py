@@ -40,7 +40,7 @@ async def update_commander(
         commander: UpdateCommander,
         commander_service: CommanderService = Depends(get_commander_service)
     ):
-    return await commander_service.update_commander(id, commander.commander)
+    return commander_service.update_commander(id, commander.commander)
 @router.delete("/{id}", response_model=dict)
 async def  delete_commander(
         id: int,
